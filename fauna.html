@@ -1,0 +1,182 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ファウナ計算用ツール</title>
+<style>
+<!--
+body {
+  padding: 5px;
+  box-sizing: border-box;
+}
+p,ul {
+  margin: 0;
+  padding: 0;
+}
+ul {
+  list-style: none;
+}
+input[type="radio"] {
+  display: none;
+}
+
+.input {
+  background: #C5D5CB;
+  padding: 10px;
+  box-sizing: border-box;
+}
+.input .item--white {
+  background: #fff;
+  padding: 5px;
+}
+.input .input__title {
+  text-align: center;
+  margin: 5px 0;
+}
+.input .input__list::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+.input .input__list__item {
+  display: block;
+  float: left;
+  width: calc((100% - (5px * 1))/2);
+  margin: 0 0 5px 5px;
+  line-height: 3;
+  background: #fff;
+  text-align: center;
+}
+.input .input__list__item:nth-child(odd) {
+  margin: 0 0 5px 0;
+}
+.input .input__list__item input[type=radio] + label {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.input .input__list__item input[type=radio]:checked + label {
+  background: #ccc;
+}
+.input__item__area {
+  width: 3em;
+  font-size: 20px;
+  padding: 5px;
+  margin: 0 3px;
+  box-sizing: border-box;
+}
+
+-->
+</style>
+</head>
+<body>
+
+<p>タイトル</p>
+
+<div id="inputArea" class="input">
+  <p class="input__title item--white">生息地域数</p>
+  <ul class="input__list">
+    <li class="input__list__item"><input type="radio" name="habitat" id="habi_1" value="habi_1" checked="checked"><label for="habi_1">１</label></li>
+    <li class="input__list__item"><input type="radio" name="habitat" id="habi_2" value="habi_2"><label for="habi_2">２</label></li>
+    <li class="input__list__item"><input type="radio" name="habitat" id="habi_3-4" value="habi_3-4"><label for="habi_3-4">３－４</label></li>
+    <li class="input__list__item"><input type="radio" name="habitat" id="habi_5-8" value="habi_5-8"><label for="habi_5-8">５－８</label></li>
+    <li class="input__list__item"><input type="radio" name="habitat" id="habi_9-16" value="habi_9-16"><label for="habi_9-16">９－１６</label></li>
+    <li class="input__list__item"><input type="radio" name="habitat" id="habi_17" value="habi_17"><label for="habi_17">１７以上</label></li>
+  </ul>
+
+  <form>
+    <p class="input__title item--white">生息地</p>
+    <p class="input__item item--white"><span class="input__item__title">正解の数</span><input id="habi_correct_value" class="input__item__area" type="tel">（<span id="habi_correct_point" class="input__item__point"></span>点）</p>
+    <p class="input__item item--white"><span class="input__item__title">隣接の数</span><input id="habi_adjacent_value" class="input__item__area" type="tel">（<span id="habi_adjacent_point" class="input__item__point"></span>点）</p>
+    <p class="input__title item--white">重さ・長さ</p>
+    <p class="input__item item--white"><span class="input__item__title">正解の数</span><input id="hgt_correct_value" class="input__item__area" type="tel">（<span id="hgt_correct_point" class="input__item__point"></span>点）</p>
+    <p class="input__item item--white"><span class="input__item__title">隣接の数</span><input id="hgt_adjacent_value" class="input__item__area" type="tel">（<span id="hgt_adjacent_point" class="input__item__point"></span>点）</p>
+
+    <p class="input__title item--white"><span class="input__item__title">これまでの点数</span><input id="now_value" class="input__item__area" type="tel"></p>
+
+    <button type="reset">内容をリセット</button>
+
+    <button type="button" id="output">計算する</button>
+  </form>
+</div>
+
+<div id="outputArea" class="output">
+  <p>生息地の合計<span id="habi_total"></span>点</p>
+  <p>重さ・長さの合計<span id="hgt_total"></span>点</p>
+  <p>生息地 + 重さ・長さの合計<span id="habi_hgt_total"></span>点</p>
+  <p>生息地 + 重さ・長さ + これまでの合計<span id="habi_hgt_now_total"></span>点</p>
+</div>
+
+<script>
+function $(id) { return document.getElementById(id); }
+$("output").onclick = function() {
+  let a_check,a_score,score_a_correct,score_a_adjacent;
+  //選択中のボタンの取得
+  const habitat = document.getElementsByName("habitat");
+  for (let i = 0; i < habitat.length; i++){
+    if(habitat[i].checked){ a_check = habitat[i].value; break; }
+  }
+  //生息数別の点数計算
+  switch(a_check) {
+    case 'habi_1':
+      score_a_correct = 12;
+      score_a_adjacent = 8;
+      a_score = ($("habi_correct_value").value * score_a_correct) + ($("habi_adjacent_value").value * score_a_adjacent);
+      $("habi_correct_point").innerHTML = score_a_correct;
+      $("habi_adjacent_point").innerHTML = score_a_adjacent;
+      break;
+    case 'habi_2':
+      score_a_correct = 10;
+      score_a_adjacent = 5;
+      a_score = ($("habi_correct_value").value * score_a_correct) + ($("habi_adjacent_value").value * score_a_adjacent);
+      $("habi_correct_point").innerHTML = score_a_correct;
+      $("habi_adjacent_point").innerHTML = score_a_adjacent;
+      break;
+    case 'habi_3-4':
+      score_a_correct = 8;
+      score_a_adjacent = 4;
+      a_score = ($("habi_correct_value").value * score_a_correct) + ($("habi_adjacent_value").value * score_a_adjacent);
+      $("habi_correct_point").innerHTML = score_a_correct;
+      $("habi_adjacent_point").innerHTML = score_a_adjacent;
+      break;
+    case 'habi_5-8':
+      score_a_correct = 6;
+      score_a_adjacent = 2;
+      a_score = ($("habi_correct_value").value * score_a_correct) + ($("habi_adjacent_value").value * score_a_adjacent);
+      $("habi_correct_point").innerHTML = score_a_correct;
+      $("habi_adjacent_point").innerHTML = score_a_adjacent;
+      break;
+    case 'habi_9-16':
+      score_a_correct = 4;
+      score_a_adjacent = 1;
+      a_score = ($("habi_correct_value").value * score_a_correct) + ($("habi_adjacent_value").value * score_a_adjacent);
+      $("habi_correct_point").innerHTML = score_a_correct;
+      $("habi_adjacent_point").innerHTML = score_a_adjacent;
+      break;
+    case 'habi_17':
+      score_a_correct = 3;
+      score_a_adjacent = 0;
+      a_score = ($("habi_correct_value").value * score_a_correct) + ($("habi_adjacent_value").value * score_a_adjacent);
+      $("habi_correct_point").innerHTML = score_a_correct;
+      $("habi_adjacent_point").innerHTML = score_a_adjacent;
+      break;
+  }
+
+  //重さ・長さの点数計算
+  const score_b_correct = 7;
+  const score_b_adjacent = 3;
+  const b_score = ($("hgt_correct_value").value * score_b_correct) + ($("hgt_adjacent_value").value * score_b_adjacent);
+  $("hgt_correct_point").innerHTML = score_b_correct;
+  $("hgt_adjacent_point").innerHTML = score_b_adjacent;
+
+  //合計点の反映
+  $("habi_total").innerHTML = a_score;
+  $("hgt_total").innerHTML = b_score;
+  $("habi_hgt_total").innerHTML = a_score + b_score;
+  $("habi_hgt_now_total").innerHTML = a_score + b_score + parseInt($("now_value").value||0);
+};
+
+</script>
+
+</body>
+</html>
